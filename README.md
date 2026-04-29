@@ -217,8 +217,3 @@ frontend/
     services/        API client
     test/            Test setup
 ```
-
-## Submission Links
-
-- Backend repository: add GitHub repository link here
-- Frontend repository: add GitHub repository link here
