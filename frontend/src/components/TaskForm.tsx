@@ -57,33 +57,53 @@ export function TaskForm({ onCreateTask }: TaskFormProps) {
   return (
     <form className="task-form" onSubmit={handleSubmit}>
       <h2>Create task</h2>
+      <p className="form-help">Add the key action the caseworker needs to complete. You can update the status later from the task list.</p>
       {error && <p className="error" role="alert">{error}</p>}
 
-      <label>
+      <label htmlFor="task-title">
         Title
-        <input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={200} />
       </label>
+      <input
+        id="task-title"
+        value={title}
+        onChange={(event) => setTitle(event.target.value)}
+        maxLength={200}
+        placeholder="e.g. Review evidence bundle"
+      />
 
-      <label>
+      <label htmlFor="task-description">
         Description
-        <textarea value={description} onChange={(event) => setDescription(event.target.value)} maxLength={1000} />
       </label>
+      <textarea
+        id="task-description"
+        value={description}
+        onChange={(event) => setDescription(event.target.value)}
+        maxLength={1000}
+        placeholder="Optional notes, context or next steps"
+      />
+      <span className="field-hint">{description.length}/1000 characters</span>
 
-      <label>
+      <label htmlFor="task-status">
         Status
-        <select value={status} onChange={(event) => setStatus(event.target.value as TaskStatus)}>
-          {taskStatuses.map((taskStatus) => (
-            <option key={taskStatus} value={taskStatus}>
-              {statusLabels[taskStatus]}
-            </option>
-          ))}
-        </select>
       </label>
+      <select id="task-status" value={status} onChange={(event) => setStatus(event.target.value as TaskStatus)}>
+        {taskStatuses.map((taskStatus) => (
+          <option key={taskStatus} value={taskStatus}>
+            {statusLabels[taskStatus]}
+          </option>
+        ))}
+      </select>
 
-      <label>
+      <label htmlFor="task-due-date-time">
         Due date/time
-        <input type="datetime-local" value={dueDateTime} onChange={(event) => setDueDateTime(event.target.value)} />
       </label>
+      <input
+        id="task-due-date-time"
+        type="datetime-local"
+        value={dueDateTime}
+        onChange={(event) => setDueDateTime(event.target.value)}
+      />
+      <span className="field-hint">Use the date and time the task should be completed by.</span>
 
       <button type="submit" disabled={submitting}>
         {submitting ? 'Creating...' : 'Create task'}

@@ -24,7 +24,8 @@ describe('App', () => {
 
     render(<App />);
 
-    expect(await screen.findByText('No tasks yet. Create a task to get started.')).toBeInTheDocument();
+    expect(await screen.findByText('No tasks yet')).toBeInTheDocument();
+    expect(screen.getByText('Total tasks')).toBeInTheDocument();
   });
 
   it('creates and displays a task', async () => {
@@ -34,13 +35,14 @@ describe('App', () => {
 
     render(<App />);
 
-    await screen.findByText('No tasks yet. Create a task to get started.');
+    await screen.findByText('No tasks yet');
     await user.type(screen.getByLabelText('Title'), 'Prepare hearing notes');
     await user.type(screen.getByLabelText('Description'), 'Draft a concise summary.');
     await user.type(screen.getByLabelText('Due date/time'), '2026-05-01T09:30');
     await user.click(screen.getByRole('button', { name: 'Create task' }));
 
     expect(await screen.findByText('Prepare hearing notes')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('Task "Prepare hearing notes" was created.');
     expect(fetch).toHaveBeenLastCalledWith(
       'http://localhost:4000/api/tasks',
       expect.objectContaining({ method: 'POST' })
@@ -69,6 +71,7 @@ describe('App', () => {
 
   it('deletes a task', async () => {
     const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
     mockFetch(jsonResponse([sampleTask]), emptyResponse(204));
 
     render(<App />);
@@ -79,6 +82,7 @@ describe('App', () => {
     await waitFor(() => {
       expect(screen.queryByText('Review case file')).not.toBeInTheDocument();
     });
+    expect(window.confirm).toHaveBeenCalledWith('Delete "Review case file"? This cannot be undone.');
   });
 });
 
